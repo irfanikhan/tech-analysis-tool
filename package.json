@@ -11,7 +11,12 @@
   "dependencies": {
     "react": "^18",
     "react-dom": "^18",
-    "next": "14.2.28"
+    "next": "14.2.28",
+    "clsx": "^2.1.1",
+    "next-themes": "^0.4.6",
+    "lucide-react": "^0.487.0",
+    "tailwind-merge": "^3.2.0",
+    "xlsx": "npm:@e965/xlsx@0.20.3"
   },
   "devDependencies": {
     "typescript": "^5",
