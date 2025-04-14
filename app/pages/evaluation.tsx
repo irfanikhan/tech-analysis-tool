@@ -16,71 +16,31 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Pagination } from "@/components/ui/pagination";
 import ToggleTheme from "@/components/toggleTheme/toggle";
 import { DragAndDropFileUpload } from "@/components/dndFileUplaod/dndFileUpload";
-
-type Person = {
-  name: string;
-  email: string;
-  employeeId: string | number;
-  rating: number;
-  experience: number;
-  hasExperience: string;
-  compositeScore: number;
-};
-
-type TechData = {
-  [tech: string]: Person[];
-};
-
-// Helper to normalize tech names
-function normalizeTechName(name: string): string {
-  return name
-    .toLowerCase()
-    .replace(/\.js$/, "") // remove ".js"
-    .replace(/[^a-z0-9]/gi, "") // remove non-alphanumeric
-    .trim();
-}
-
-function getExperience(
-  row: Record<string, string | number>,
-  tech: string
-): { experience: number; hasExperience: string } {
-  const normalizedTech = normalizeTechName(tech);
-
-  const experienceKey = Object.keys(row).find((key) => {
-    const normalizedKey = normalizeTechName(key);
-    return (
-      normalizedKey.includes("yearsofexperience") &&
-      normalizedKey.includes(normalizedTech)
-    );
-  });
-
-  const experienceStr = experienceKey ? row[experienceKey] : 0;
-  const experience = parseFloat(experienceStr as string) || 0;
-
-  const hasExpKey = Object.keys(row).find((key) => {
-    const normalizedKey = normalizeTechName(key);
-    return (
-      normalizedKey.includes("doyouhaveexperience") &&
-      normalizedKey.includes(normalizedTech)
-    );
-  });
-
-  const hasExperience =
-    hasExpKey && row[hasExpKey]?.toString().toLowerCase() === "yes"
-      ? "Yes"
-      : "No";
-
-  return { experience, hasExperience };
-}
+import SortIcon from "@/components/ui/sort";
+import { getExperience, getSortedData } from "@/lib/utils";
+import { TechData } from "@/types/techData";
+import { Person } from "@/types/person";
 
 export default function TrainingEvaluator() {
-  const [trainingData, setTrainingData] = useState<TechData>({});
-  const [trainerData, setTrainerData] = useState<TechData>({});
+  const [trainingData, setTrainingData] = useState<TechData<Person>>({});
+  const [trainerData, setTrainerData] = useState<TechData<Person>>({});
   const [selectedTech, setSelectedTech] = useState<string>("");
   const [technologies, setTechnologies] = useState<string[]>([]);
   const [tab, setTab] = useState<string>("training");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const rowsPerPage = 10;
+  const [sortConfig, setSortConfig] = useState<{
+    key: keyof Person;
+    direction: "asc" | "desc";
+  } | null>(null);
+
+  const handleSort = (key: keyof Person) => {
+    setSortConfig((prev) =>
+      prev?.key === key
+        ? { key, direction: prev.direction === "asc" ? "desc" : "asc" }
+        : { key, direction: "asc" }
+    );
+  };
 
   useEffect(() => {
     const selectedTab = localStorage.getItem("selectedTab");
@@ -101,8 +61,8 @@ export default function TrainingEvaluator() {
       const json =
         XLSX.utils.sheet_to_json<Record<string, string | number>>(sheet);
 
-      const trainingCategories: TechData = {};
-      const trainerCategories: TechData = {};
+      const trainingCategories: TechData<Person> = {};
+      const trainerCategories: TechData<Person> = {};
 
       json.forEach((row) => {
         const name = row["Full Name"] as string;
@@ -172,7 +132,8 @@ export default function TrainingEvaluator() {
   const renderTable = (title: string, data: Person[]) => {
     const indexOfLast = currentPage * rowsPerPage;
     const indexOfFirst = indexOfLast - rowsPerPage;
-    const currentData = data.slice(indexOfFirst, indexOfLast);
+    const sortedData = getSortedData(data, sortConfig);
+    const currentData = sortedData.slice(indexOfFirst, indexOfLast);
     const totalPages = Math.ceil(data.length / rowsPerPage);
 
     return (
@@ -187,13 +148,52 @@ export default function TrainingEvaluator() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Employee ID</TableHead>
-                <TableHead>Has Experience</TableHead>
-                <TableHead>Rating</TableHead>
-                <TableHead>Experience</TableHead>
-                <TableHead>Composite Score</TableHead>
+                <TableHead
+                  onClick={() => handleSort("name")}
+                  className="w-12 cursor-pointer select-none"
+                >
+                  Name <SortIcon column="name" sortConfig={sortConfig} />
+                </TableHead>
+                <TableHead
+                  onClick={() => handleSort("email")}
+                  className="w-11 cursor-pointer select-none"
+                >
+                  Email <SortIcon column="email" sortConfig={sortConfig} />
+                </TableHead>
+                <TableHead
+                  onClick={() => handleSort("employeeId")}
+                  className="w-7 cursor-pointer select-none"
+                >
+                  Employee ID{" "}
+                  <SortIcon column="employeeId" sortConfig={sortConfig} />
+                </TableHead>
+                <TableHead
+                  onClick={() => handleSort("hasExperience")}
+                  className="w-9 cursor-pointer select-none"
+                >
+                  Has Experience{" "}
+                  <SortIcon column="hasExperience" sortConfig={sortConfig} />
+                </TableHead>
+                <TableHead
+                  onClick={() => handleSort("rating")}
+                  className="w-4 cursor-pointer select-none"
+                >
+                  Rating <SortIcon column="rating" sortConfig={sortConfig} />
+                </TableHead>
+                <TableHead
+                  onClick={() => handleSort("experience")}
+                  className="w-5 cursor-pointer select-none"
+                >
+                  Experience{" "}
+                  <SortIcon column="experience" sortConfig={sortConfig} />
+                </TableHead>
+                <TableHead
+                  onClick={() => handleSort("compositeScore")}
+                  className="w-4 cursor-pointer select-none"
+                >
+                  Score{" "}
+                  <SortIcon column="compositeScore" sortConfig={sortConfig} />
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -228,7 +228,7 @@ export default function TrainingEvaluator() {
         <ToggleTheme />
       </div>
 
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         <div className="flex flex-col items-center justify-center space-y-6">
           <h1 className="text-3xl font-bold text-left">
             Resources Training Evaluation
