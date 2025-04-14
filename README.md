@@ -140,17 +140,6 @@ export function cn(...inputs: ClassValue[]) {
 - Excel export functionality with ratings.
 - Pagination for long lists.
 
----
-
-## 📤 Excel Format
-The uploaded Excel file should have columns like:
-
-- Full Name
-- Email Address
-- Employee ID
-- Rate your JavaScript skills
-- Rate your React skills
-- Rate your NodeJS skills
 
 ---
 
