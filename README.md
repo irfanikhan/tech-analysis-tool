@@ -14,7 +14,7 @@ These are further filtered by technology and can be downloaded as Excel files. T
 ### 1. Clone the repository:
 ```bash
 git clone <your-repo-url>
-cd dev-resources-analysis
+cd <repo-name>
 ```
 
 ### 2. Install dependencies:
@@ -109,10 +109,10 @@ Custom tab components to switch between training and trainers.
 </Tabs>
 ```
 
-### 📄 Input
+### 📄 DragAndDropFileUpload
 File input to upload Excel sheet.
 ```tsx
-<Input type="file" accept=".xlsx, .xls" />
+<DragAndDropFileUpload onFileSelect={handleFileUpload}" />
 ```
 
 ---
