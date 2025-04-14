@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import React from "react";
 
 export const Table = ({ children }: { children: React.ReactNode }) => (
@@ -14,12 +15,12 @@ export const TableBody = ({ children }: { children: React.ReactNode }) => (
   <tbody>{children}</tbody>
 );
 
-export const TableRow = ({ children }: { children: React.ReactNode }) => (
-  <tr className="border-t border-gray-200 dark:border-gray-700">{children}</tr>
+export const TableRow = ({ children, className }: { children: React.ReactNode, className?: string }) => (
+  <tr className={cn("border-t border-gray-200 dark:border-gray-700", className)}>{children}</tr>
 );
 
-export const TableHead = ({ children }: { children: React.ReactNode }) => (
-  <th className="px-4 py-2 font-semibold text-gray-700 dark:text-gray-300">
+export const TableHead = ({ children, className }: { children: React.ReactNode, className?: string }) => (
+  <th className={cn("px-4 py-2 font-semibold text-gray-700 dark:text-gray-300", className)}>
     {children}
   </th>
 );

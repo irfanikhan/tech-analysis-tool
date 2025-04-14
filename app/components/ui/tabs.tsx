@@ -1,16 +1,20 @@
-import { cn } from "@/app/lib/utils";
+import { cn } from "@/lib/utils";
 import React from "react";
 
 export const Tabs = ({
   value,
   onValueChange,
   children,
+  className,
 }: {
   value: string;
   onValueChange: (v: string) => void;
   children: React.ReactNode;
+  className?: string;
 }) => {
-  return value && !!onValueChange && <div>{children}</div>;
+  return (
+    value && !!onValueChange && <div className={className}>{children}</div>
+  );
 };
 
 export const TabsList = ({ children }: { children: React.ReactNode }) => (
