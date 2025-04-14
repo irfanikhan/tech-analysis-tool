@@ -1,9 +1,9 @@
 # Training Evaluation App
 
-This app allows admins to upload an Excel file containing employee ratings for different technologies and categorizes the employees into two lists:
+This app allows admins to upload an Excel file containing employee comprehensive data for different technologies and categorizes the employees into two lists:
 
-1. **Resources Needing Training** (rating < 5)
-2. **Resources Eligible to Train** (rating > 6)
+1. **Resources Needing Training**
+2. **Resources Eligible to Train**
 
 These are further filtered by technology and can be downloaded as Excel files. The UI is tab-based, paginated, and responsive.
 
