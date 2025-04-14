@@ -1,36 +1,159 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Training Evaluation App
 
-## Getting Started
+This app allows admins to upload an Excel file containing employee ratings for different technologies and categorizes the employees into two lists:
 
-First, run the development server:
+1. **Resources Needing Training** (rating < 5)
+2. **Resources Eligible to Train** (rating > 6)
 
+These are further filtered by technology and can be downloaded as Excel files. The UI is tab-based, paginated, and responsive.
+
+---
+
+## 🛠 Development Setup
+
+### 1. Clone the repository:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <your-repo-url>
+cd dev-resources-analysis
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Install dependencies:
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 3. Start the development server:
+```bash
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The app will be available at `http://localhost:3000`
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 📦 Installed Packages
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `react`
+- `next`
+- `tailwindcss`
+- `clsx`
+- `tailwind-merge`
+- `xlsx` — for reading and exporting Excel files
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 📁 Project Structure
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+/components
+  /ui
+    - card.tsx
+    - table.tsx
+    - button.tsx
+    - tabs.tsx
+    - input.tsx
+/lib
+  - utils.ts
+/app
+  - page.tsx (Main app logic)
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## 🧱 Components Overview
+
+### 📄 Card
+Reusable wrapper container for sections.
+
+```tsx
+<Card>
+  <CardContent>
+    {/* content */}
+  </CardContent>
+</Card>
+```
+
+### 📄 Table
+UI table with reusable headers and rows.
+```tsx
+<Table>
+  <TableHeader>
+    <TableRow>
+      <TableHead>...</TableHead>
+    </TableRow>
+  </TableHeader>
+  <TableBody>
+    <TableRow>
+      <TableCell>...</TableCell>
+    </TableRow>
+  </TableBody>
+</Table>
+```
+
+### 📄 Button
+Styled button component.
+```tsx
+<Button>Download Excel</Button>
+```
+
+### 📄 Tabs
+Custom tab components to switch between training and trainers.
+```tsx
+<Tabs defaultValue="training">
+  <TabsList>
+    <TabsTrigger value="training">Training Needed</TabsTrigger>
+    <TabsTrigger value="trainers">Eligible Trainers</TabsTrigger>
+  </TabsList>
+  <TabsContent value="training">...</TabsContent>
+  <TabsContent value="trainers">...</TabsContent>
+</Tabs>
+```
+
+### 📄 Input
+File input to upload Excel sheet.
+```tsx
+<Input type="file" accept=".xlsx, .xls" />
+```
+
+---
+
+## 🧠 Utility Functions
+
+### lib/utils.ts
+Contains `cn` function to conditionally merge class names using `clsx` and `tailwind-merge`.
+
+```ts
+import { ClassValue, clsx } from "clsx"
+import { twMerge } from "tailwind-merge"
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
+```
+
+---
+
+## ✅ Features
+- Upload Excel files and parse ratings.
+- Filter by technology.
+- Two separate tabs for training needs and trainers.
+- Excel export functionality with ratings.
+- Pagination for long lists.
+
+---
+
+## 📤 Excel Format
+The uploaded Excel file should have columns like:
+
+- Full Name
+- Email Address
+- Employee ID
+- Rate your JavaScript skills
+- Rate your React skills
+- Rate your NodeJS skills
+
+---
+
+## 📬 Contributions
+Feel free to fork and create PRs. Feedback is welcome!
+
