@@ -94,7 +94,7 @@ export default function TrainingEvaluator() {
             if (!trainerCategories[tech]) trainerCategories[tech] = [];
 
             if (compositeScore < 5) trainingCategories[tech].push(person);
-            else if (compositeScore > 7) trainerCategories[tech].push(person);
+            else if (compositeScore > 5) trainerCategories[tech].push(person);
           }
         });
       });
