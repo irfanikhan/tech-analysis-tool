@@ -7,11 +7,23 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-// Helper to normalize tech names
+// // Helper to normalize tech names
+// function normalizeTechName(name: string): string {
+//   return name
+//     .toLowerCase()
+//     .replace(/\.js$/, "") // remove ".js"
+//     .replace(/[^a-z0-9]/gi, "") // remove non-alphanumeric
+//     .trim();
+// }
+
 function normalizeTechName(name: string): string {
   return name
     .toLowerCase()
-    .replace(/\.js$/, "") // remove ".js"
+    .replace(/\.js$/, "")
+    .replace(
+      /\b(js|skills|experience|technologies|architecture|framework)\b/g,
+      ""
+    ) // remove noise words
     .replace(/[^a-z0-9]/gi, "") // remove non-alphanumeric
     .trim();
 }
@@ -49,7 +61,10 @@ export function getExperience(
   return { experience, hasExperience };
 }
 
-export const getSortedData = (data: Person[], sortConfig: SortConfig<Person>) => {
+export const getSortedData = (
+  data: Person[],
+  sortConfig: SortConfig<Person>
+) => {
   if (!sortConfig) return data;
   return [...data].sort((a, b) => {
     const valA = a[sortConfig.key];

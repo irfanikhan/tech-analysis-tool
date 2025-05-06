@@ -22,11 +22,14 @@ import { Person } from "@/types/person";
 import Sidebar from "@/components/Sidebar";
 import { DragAndDropFileUpload } from "@/components/DndFileUpload";
 
+const techRegex = /rate your (.+?)(?: skills| experience)? on a scale/i;
+
 export default function TrainingEvaluator() {
   const [trainingData, setTrainingData] = useState<TechData<Person>>({});
   const [trainerData, setTrainerData] = useState<TechData<Person>>({});
   const [selectedTech, setSelectedTech] = useState<string>("");
   const [technologies, setTechnologies] = useState<string[]>([]);
+  const [fileUploaded, setFileUploaded] = useState<File | null>(null);
   const [tab, setTab] = useState<string>("training");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const rowsPerPage = 10;
@@ -54,6 +57,8 @@ export default function TrainingEvaluator() {
   const handleFileUpload = (file: File | null) => {
     if (!file) return;
 
+    setFileUploaded(file);
+
     const reader = new FileReader();
     reader.onload = (evt) => {
       const data = new Uint8Array(evt.target?.result as ArrayBuffer);
@@ -71,10 +76,24 @@ export default function TrainingEvaluator() {
         const employeeId = row["Employee ID"] as string;
 
         Object.entries(row).forEach(([key, value]) => {
-          const match = key.match(/rate your (.+?) skills/i);
+          // const match = key.match(/rate your (.+?) skills/i);
+          let match = key.match(techRegex);
+
+          // Fallback logic if first match fails
+          if (!match && key.toLowerCase().includes("rate your")) {
+            const cleaned = key
+              .toLowerCase()
+              .replace("if yes,", "")
+              .replace("how would you", "")
+              .replace("rate your", "")
+              .replace(/on a scale.*$/i, "")
+              .replace(/[^a-z0-9\s]/gi, "")
+              .trim();
+
+            if (cleaned) match = ["", cleaned] as unknown as RegExpMatchArray;
+          }
 
           if (match) {
-            console.log(row);
             const tech = match[1].trim();
             const rating = parseFloat(value as string);
             const { experience, hasExperience } = getExperience(row, tech);
@@ -231,11 +250,11 @@ export default function TrainingEvaluator() {
           <ToggleTheme />
         </div>
 
-        <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col items-center justify-center space-y-6">
-            <h1 className="text-3xl font-bold text-left">
-              Resources Training Evaluation
-            </h1>
+        <div className="max-full mx-auto">
+          <div
+            className={`absolute w-full flex flex-col items-center space-y-6 transition-all duration-700 ease-in-out
+        ${fileUploaded ? "top-8" : "top-1/2 -translate-y-1/2"}`}
+          >
             <DragAndDropFileUpload
               onFileSelect={handleFileUpload}
               className="w-72 m-3"
