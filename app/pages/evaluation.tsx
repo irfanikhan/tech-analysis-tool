@@ -14,12 +14,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Pagination } from "@/components/ui/pagination";
-import ToggleTheme from "@/components/toggleTheme/toggle";
-import { DragAndDropFileUpload } from "@/components/dndFileUplaod/dndFileUpload";
+import ToggleTheme from "@/components/ThemeToggle";
 import SortIcon from "@/components/ui/sort";
 import { getExperience, getSortedData } from "@/lib/utils";
 import { TechData } from "@/types/techData";
 import { Person } from "@/types/person";
+import Sidebar from "@/components/Sidebar";
+import { DragAndDropFileUpload } from "@/components/DndFileUpload";
 
 export default function TrainingEvaluator() {
   const [trainingData, setTrainingData] = useState<TechData<Person>>({});
@@ -223,93 +224,96 @@ export default function TrainingEvaluator() {
   };
 
   return (
-    <div className="min-h-screen p-6 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300">
-      <div className="flex justify-end mb-2">
-        <ToggleTheme />
-      </div>
-
-      <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col items-center justify-center space-y-6">
-          <h1 className="text-3xl font-bold text-left">
-            Resources Training Evaluation
-          </h1>
-          <DragAndDropFileUpload
-            onFileSelect={handleFileUpload}
-            className="w-72 m-3"
-          />
+    <div>
+      <Sidebar />
+      <div className="min-h-screen p-6 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300">
+        <div className="flex justify-end mb-2">
+          <ToggleTheme />
         </div>
 
-        {technologies.length > 0 && (
-          <Card className="mt-8">
-            <CardContent>
-              <div className="flex items-center gap-4 mb-4">
-                <label className="text-sm font-medium dark:text-white">
-                  Select Technology:
-                </label>
-                <select
-                  className="border p-2.5 rounded-lg dark:bg-gray-800 dark:text-white border-gray-200 dark:border-gray-600"
-                  value={selectedTech}
-                  onChange={(e) => {
-                    const selected = e.target.value;
-                    setSelectedTech(selected);
-                    localStorage.setItem("selectedTech", selected);
-                    setCurrentPage(1);
-                  }}
-                >
-                  <option value="">Select Technology</option>
-                  {technologies.map((tech) => (
-                    <option key={tech} value={tech}>
-                      {tech}
-                    </option>
-                  ))}
-                </select>
-              </div>
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col items-center justify-center space-y-6">
+            <h1 className="text-3xl font-bold text-left">
+              Resources Training Evaluation
+            </h1>
+            <DragAndDropFileUpload
+              onFileSelect={handleFileUpload}
+              className="w-72 m-3"
+            />
+          </div>
 
-              <Tabs value={tab} onValueChange={setTab}>
-                <TabsList>
-                  <TabsTrigger
-                    value="training"
-                    selected={tab === "training"}
-                    onClick={() => {
-                      setTab("training");
-                      localStorage.setItem("selectedTab", "training");
+          {technologies.length > 0 && (
+            <Card className="mt-8">
+              <CardContent>
+                <div className="flex items-center gap-4 mb-4">
+                  <label className="text-sm font-medium dark:text-white">
+                    Select Technology:
+                  </label>
+                  <select
+                    className="border p-2.5 rounded-lg dark:bg-gray-800 dark:text-white border-gray-200 dark:border-gray-600"
+                    value={selectedTech}
+                    onChange={(e) => {
+                      const selected = e.target.value;
+                      setSelectedTech(selected);
+                      localStorage.setItem("selectedTech", selected);
                       setCurrentPage(1);
                     }}
                   >
-                    Needs Training
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="trainer"
-                    selected={tab === "trainer"}
-                    onClick={() => {
-                      setTab("trainer");
-                      localStorage.setItem("selectedTab", "trainer");
-                      setCurrentPage(1);
-                    }}
-                  >
-                    Eligible Trainers
-                  </TabsTrigger>
-                </TabsList>
-                <TabsContent value="training" selected={tab === "training"}>
-                  {selectedTech &&
-                    trainingData[selectedTech]?.length > 0 &&
-                    renderTable(
-                      `Resources Needing ${selectedTech} Training`,
-                      trainingData[selectedTech]
-                    )}
-                </TabsContent>
-                <TabsContent value="trainer" selected={tab === "trainer"}>
-                  {selectedTech &&
-                    trainerData[selectedTech]?.length > 0 &&
-                    renderTable(
-                      `Trainers for ${selectedTech}`,
-                      trainerData[selectedTech]
-                    )}
-                </TabsContent>
-              </Tabs>
-            </CardContent>
-          </Card>
-        )}
+                    <option value="">Select Technology</option>
+                    {technologies.map((tech) => (
+                      <option key={tech} value={tech}>
+                        {tech}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <Tabs value={tab} onValueChange={setTab}>
+                  <TabsList>
+                    <TabsTrigger
+                      value="training"
+                      selected={tab === "training"}
+                      onClick={() => {
+                        setTab("training");
+                        localStorage.setItem("selectedTab", "training");
+                        setCurrentPage(1);
+                      }}
+                    >
+                      Needs Training
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="trainer"
+                      selected={tab === "trainer"}
+                      onClick={() => {
+                        setTab("trainer");
+                        localStorage.setItem("selectedTab", "trainer");
+                        setCurrentPage(1);
+                      }}
+                    >
+                      Eligible Trainers
+                    </TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="training" selected={tab === "training"}>
+                    {selectedTech &&
+                      trainingData[selectedTech]?.length > 0 &&
+                      renderTable(
+                        `Resources Needing ${selectedTech} Training`,
+                        trainingData[selectedTech]
+                      )}
+                  </TabsContent>
+                  <TabsContent value="trainer" selected={tab === "trainer"}>
+                    {selectedTech &&
+                      trainerData[selectedTech]?.length > 0 &&
+                      renderTable(
+                        `Trainers for ${selectedTech}`,
+                        trainerData[selectedTech]
+                      )}
+                  </TabsContent>
+                </Tabs>
+              </CardContent>
+            </Card>
+          )}
+        </div>
       </div>
     </div>
   );
