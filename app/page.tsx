@@ -1,7 +1,5 @@
-import TrainingEvaluation from "./pages/evaluation";
+import TrainingEvaluation from "./evaluator/evaluator";
 
 export default function Home() {
-  return (
-    <TrainingEvaluation />
-  );
+  return <TrainingEvaluation />;
 }
